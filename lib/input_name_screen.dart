@@ -1,87 +1,82 @@
 import 'package:flutter/material.dart';
+import 'package:unjuk_keterampilan_adventia/main.dart';
 
-class InputName extends StatelessWidget {
-  const InputName({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    const appTitle = 'Input Nama';
-
-    return MaterialApp(
-      title: appTitle,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text(appTitle),
-        ),
-        body: const MyCustomForm(),
-      ),
+    return const MaterialApp(
+      title: 'Input nama',
+      home: MyCustomForm(),
     );
   }
 }
 
-// Create a Form widget.
+
 class MyCustomForm extends StatefulWidget {
   const MyCustomForm({super.key});
 
   @override
-  MyCustomFormState createState() {
-    return MyCustomFormState();
-  }
+  State<MyCustomForm> createState() => _MyCustomFormState();
 }
 
-// Create a corresponding State class.
-// This class holds data related to the form.
-class MyCustomFormState extends State<MyCustomForm> {
-  // Create a global key that uniquely identifies the Form widget
-  // and allows validation of the form.
-  //
-  // Note: This is a GlobalKey<FormState>,
-  // not a GlobalKey<MyCustomFormState>.
-  final _formKey = GlobalKey<FormState>();
+var hour = DateTime.now().hour;
+
+customBackgroundColor() {
+  if (hour < 4) {
+    return Colors.black;
+  }
+  if (hour < 15) {
+    return Colors.blueGrey;
+  }
+  if (hour < 18) {
+    return Colors.deepOrangeAccent;
+  }
+  return Colors.black;
+}
+
+class _MyCustomFormState extends State<MyCustomForm> {
+  final myController = TextEditingController();
+
+  @override
+  void dispose() {
+    myController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Build a Form widget using the _formKey created above.
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-            child: TextFormField(
-            
-            // The validator receives the text that the user has entered.
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Selamat Datang!'),
+        backgroundColor: customBackgroundColor(),
+      ),
+      body: 
+      Column(children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: TextField(
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
-              labelText: 'Enter your username',
-            )
-          ),
-          ),
-          
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: ElevatedButton(
-              onPressed: () {
-                // Validate returns true if the form is valid, or false otherwise.
-                if (_formKey.currentState!.validate()) {
-                  // If the form is valid, display a snackbar. In the real world,
-                  // you'd often call a server or save the information in a database.
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Processing Data')),
-                  );
-                }
-              },
-              child: const Text('Submit'),
+              labelText: 'Masukkan nama..',
             ),
+            controller: myController,
           ),
-        ],
+         ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: ElevatedButton(
+            onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SplashScreen(name: myController.text,)),
+              );
+            },
+            child: const Text('Submit'),
+          ),
+        ),
+      ],
       ),
     );
   }
